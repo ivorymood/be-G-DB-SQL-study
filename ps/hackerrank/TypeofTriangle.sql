@@ -1,15 +1,15 @@
 -- https://www.hackerrank.com/challenges/what-type-of-triangle/problem
 -- Type of Triangle
 
-SELECT IF(GRADE >= 8, NAME, NULL) NAME, GRADE, MARKS
+SELECT CASE
+            WHEN MAX >= MID + MIN THEN "Not A Triangle"
+            WHEN MAX = MID AND MID = MIN THEN "Equilateral"
+            WHEN MAX = MID OR MID = MIN THEN "Isosceles"
+            WHEN MAX <> MID AND MID <> MIN THEN "Scalene"
+        END AS TYPE
 FROM (
-    SELECT NAME, GRADE, MARKS
-    FROM STUDENTS S
-    LEFT JOIN GRADES G ON MAX_MARK >= MARKS AND MARKS >= MIN_MARK
-) R
-ORDER BY GRADE DESC,
-        (CASE
-            WHEN GRADE >= 8 THEN NAME
-            ELSE MARKS
-        END)
-;
+    SELECT GREATEST(A, B, C) AS "MAX",
+            ((A + B + C) - GREATEST(A, B, C) - LEAST(A, B, C)) AS "MID",
+            LEAST(A, B, C) AS "MIN"
+    FROM TRIANGLES
+) T;
